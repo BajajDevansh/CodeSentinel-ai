@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: codesentinel-backend
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://devanshbajaj0206:Akshat%40123@cluster0-shard-00-00.7ene5.mongodb.net:27017,cluster0-shard-00-01.7ene5.mongodb.net:27017,cluster0-shard-00-02.7ene5.mongodb.net:27017/codesentinel?ssl=true&replicaSet=atlas-z49ios-shard-0&authSource=admin}
+      database: codeSentinel
+      auto-index-creation: true
+  threads:
+    virtual:
+      enabled: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:codesentinel-super-secret-jwt-key-with-at-least-256-bits-length-for-hmac-sha-256}
+    access-token-expiration-ms: 86400000 # 24 hours
+    refresh-token-expiration-ms: 604800000 # 7 days
+
+ai-service:
+  base-url: ${AI_SERVICE_URL:http://localhost:8000}
+  timeout-seconds: 120
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.codesentinel: DEBUG
+    org.springframework.security: INFO

@@ -1,0 +1,6 @@
+{
+  "name": "CodeSentinel",
+  "description": "AI-Powered Software Engineering Assistant: Codebase Q&A, Security Scanner, Test Gap & Change Impact Analyzer",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

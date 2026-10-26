@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: CodeSentinel API Specification
+  description: API contract for AI-Powered Software Engineering Assistant
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local Spring Boot Backend Server
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: Register new developer user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                fullName: { type: string }
+                githubToken: { type: string }
+      responses:
+        '200':
+          description: User registered successfully
+  /api/v1/auth/login:
+    post:
+      summary: Login user and retrieve JWT tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200':
+          description: JWT token pair returned
+  /api/v1/repositories:
+    get:
+      summary: List user repositories
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Array of connected repositories
+    post:
+      summary: Connect GitHub repository
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                gitUrl: { type: string }
+                defaultBranch: { type: string }
+      responses:
+        '200':
+          description: Repository connected and queued for ingestion
+  /api/v1/repositories/{repositoryId}/chat:
+    post:
+      summary: Codebase Q&A with hybrid RAG citations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question: { type: string }
+                conversationId: { type: string }
+      responses:
+        '200':
+          description: Answer grounded in codebase with cited file and line spans
+  /api/v1/repositories/{repositoryId}/findings:
+    get:
+      summary: Retrieve static and security findings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: severity
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of detected code smells and vulnerabilities
+  /api/v1/repositories/{repositoryId}/tests/gaps:
+    get:
+      summary: Get coverage-guided test gap report
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Baseline vs post-generation coverage and target methods
+  /api/v1/repositories/{repositoryId}/impact/analyze:
+    post:
+      summary: Run change impact and regression risk calculation on commit diff
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Explainable risk score and affected call tree
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
